@@ -35,15 +35,36 @@ export default class App extends React.Component {
 
     focusEditor = (newState) => {
         if(this.editorRef) {
-            let selection = this.state.editorState.getSelection();
-            selection = selection.set('hasFocus', true);
-            let editorState = EditorState.set(newState, {
-                selection,
-                forceSelection: true
-            });
-            this.onChange(editorState);
+            if(newState) {
+                let selection = this.state.editorState.getSelection();
+                selection = selection.set('hasFocus', true);
+                let editorState = EditorState.set(newState, {
+                    selection,
+                    forceSelection: true
+                });
+                this.onChange(editorState);
+            }
             window.setTimeout(() => this.editorRef.focus(), 50);
         }
+    }
+
+    onEditorClick = (e) => {
+        if(e.ctrlKey) {
+            this.openLink();
+        }
+        if(this.editorRef) {
+            this.editorRef.focus();
+        }
+    }
+
+    openLink() {
+        const editorState = this.state.editorState;
+        const selection = editorState.getSelection();
+        const contentState = editorState.getCurrentContent();
+        const block = contentState.getBlockForKey(selection.getFocusKey());
+        const offset = selection.getFocusOffset();
+        const entityKey = block.getEntityAt(offset);
+        window.open(contentState.getEntity(entityKey).getData().url);
     }
 
     render() {
@@ -58,7 +79,7 @@ export default class App extends React.Component {
                     <ToolBar editorState={this.state.editorState} onChange={this.onChange} focusEditor={this.focusEditor}
                         styles={this.customStylesOb.styles} />
                 </div>
-                <div className="editor-main">
+                <div className="editor-main" onClick={this.onEditorClick}>
                     <Editor editorState={this.state.editorState} onChange={this.onChange}
                         placeholder="Type here"
                         customStyleFn={this.customStylesOb.customStyleFn}

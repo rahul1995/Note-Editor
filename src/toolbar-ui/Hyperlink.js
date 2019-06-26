@@ -9,10 +9,6 @@ import { EditorState, Modifier } from 'draft-js';
 
 export default class Hyperlink extends React.Component {
 
-    constructor(props) {
-        super(props);
-    }
-
     setLink = (text, url) => {
         const editorState = this.props.editorState;
         console.log('Old Selection State: ', editorState.getSelection());
@@ -39,15 +35,21 @@ export default class Hyperlink extends React.Component {
         this.props.onChange(finalEditorState);
     }
 
-    onDialogClose = () => {
-        
+    closeDialog = () => {
+        if(this.modalTrigger) {
+            this.modalTrigger.hide()
+        }
+        const editorState = EditorState.forceSelection(this.props.editorState, this.props.editorState.getSelection());
+        this.props.onChange(editorState);
     }
 
     render() {
         return (
-            <ModalTrigger>
+            <ModalTrigger ref = {(el) => {this.modalTrigger = el}}>
                 <ToolbarButton icon={<Link />} />
-                <MyDialog onDialogClose={this.onDialogClose} setLink={this.setLink} />
+                <MyDialog editorState={this.props.editorState} setLink={this.setLink} closeDialog={this.closeDialog}
+                    key={this.initialText}
+                />
             </ModalTrigger>
         );
     }
@@ -57,13 +59,58 @@ class MyDialog extends React.Component {
 
     constructor(props) {
         super(props);
+        const initialText = this._getTextSelection(this.props.editorState.getCurrentContent(), this.props.editorState.getSelection()) || '';
+        console.log('initial ', initialText)
         this.state = {
-            text: '',
+            text: initialText,
             url: ''
         }
     }
 
+    _getTextSelection(contentState, selection, blockDelimiter) {
+        blockDelimiter = blockDelimiter || '\n';
+        var startKey = selection.getStartKey();
+        var endKey = selection.getEndKey();
+        var blocks = contentState.getBlockMap();
+
+        var lastWasEnd = false;
+        var selectedBlock = blocks
+            .skipUntil(function (block) {
+                return block.getKey() === startKey;
+            })
+            .takeUntil(function (block) {
+                var result = lastWasEnd;
+
+                if (block.getKey() === endKey) {
+                    lastWasEnd = true;
+                }
+
+                return result;
+            });
+
+        return selectedBlock
+            .map(function (block) {
+                var key = block.getKey();
+                var text = block.getText();
+
+                var start = 0;
+                var end = text.length;
+
+                if (key === startKey) {
+                    start = selection.getStartOffset();
+                }
+                if (key === endKey) {
+                    end = selection.getEndOffset();
+                }
+
+                text = text.slice(start, end);
+                return text;
+            })
+            .join(blockDelimiter);
+    }
+
     done = () => {
+        this.props.closeDialog();
         this.props.setLink(this.state.text, this.state.url);
     }
 
@@ -74,13 +121,13 @@ class MyDialog extends React.Component {
                 confirmLabel="Done"
                 cancelLabel="Cancel"
                 onConfirm={this.done}
-                onClose={() => { this.props.onDialogClose }}
+                onCancel={this.props.closeDialog}
                 title="Insert Hyperlink in Notes"
                 keyboardConfirm
                 ref={el => {this.dialog = el}}
             >
                 <FieldLabel label="Text">
-                    <TextField placeholder="Type here" onChange={(e) => { this.setState({ text: e }) }} />
+                    <TextField value={this.state.text} placeholder="Type here" onChange={(e) => { this.setState({ text: e }) }} />
                 </FieldLabel>
                 <FieldLabel label="URL">
                     <TextField placeholder="Type here" onChange={(e) => { this.setState({ url: e }) }} />
