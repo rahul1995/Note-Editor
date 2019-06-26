@@ -1,16 +1,33 @@
-import {Editor, EditorState} from 'draft-js';
+import {Editor, EditorState, CompositeDecorator} from 'draft-js';
 import "draft-js/dist/Draft.css";
 import createStyles from 'draft-js-custom-styles';
 import "./custom.css";
 import React from 'react';
 import ToolBar from './ToolBar';
+import Link from './Link';
 
 export default class App extends React.Component {
     constructor(props) {
         super(props);
         this.customStylesOb = createStyles(['font-size', 'color'], 'CUSTOM_');
-        this.state = { editorState:  EditorState.createEmpty()};
+        const decorator = new CompositeDecorator([
+            {
+                strategy: this.findLinkEntities,
+                component: Link
+            }
+        ])
+        this.state = { editorState:  EditorState.createEmpty(decorator)};
     }
+
+    findLinkEntities = (contentBlock, callback, contentState) => {
+        contentBlock.findEntityRanges(character => {
+          const entityKey = character.getEntity();
+          return (
+            entityKey !== null &&
+            contentState.getEntity(entityKey).getType() === "LINK"
+          );
+        }, callback);
+      }
 
     onChange = (editorState) => {
         this.setState({ editorState });

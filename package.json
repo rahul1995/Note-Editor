@@ -4,7 +4,7 @@
   "description": "",
   "main": "webpack.config.js",
   "dependencies": {
-    "@react/react-spectrum": "2.21.1",
+    "@react/react-spectrum": "^2.22.0",
     "babel-polyfill": "^6.26.0",
     "babel-regenerator-runtime": "^6.5.0",
     "draft-js": "^0.10.5",

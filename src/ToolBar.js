@@ -13,7 +13,7 @@ export default class ToolBar extends React.Component {
                     styles={this.props.styles.fontSize} />
                 <InlineStyleComponent editorState={this.props.editorState} onChange={this.props.onChange} />
                 <ToggleList editorState={this.props.editorState} onChange={this.props.onChange} />
-                <Hyperlink editorState={this.props.editorState} onChange={this.props.onChange} />
+                <Hyperlink editorState={this.props.editorState} onChange={this.props.onChange} focusEditor={this.props.focusEditor} />
             </div>
         );
     }
