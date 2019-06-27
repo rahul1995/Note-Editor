@@ -20,6 +20,7 @@ export default class Hyperlink extends React.Component {
             { url }
         );
         const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
+        //TODO if selection === text, don't replace
         const contentStateAfterReplace = Modifier.replaceText(contentState,
             selection, text, undefined, entityKey);
         const tempSelection = contentStateAfterReplace.getSelectionAfter();
