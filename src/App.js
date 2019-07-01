@@ -1,10 +1,13 @@
-import {Editor, EditorState, CompositeDecorator} from 'draft-js';
+import {Editor, EditorState, CompositeDecorator, ContentState} from 'draft-js';
 import "draft-js/dist/Draft.css";
 import createStyles from 'draft-js-custom-styles';
 import "./custom.css";
 import React from 'react';
 import ToolBar from './ToolBar';
 import Link from './Link';
+import flashToDraft from './flashToDraft';
+import html from './html';
+import draftToFlash from './draftToFlash';
 
 export default class App extends React.Component {
     constructor(props) {
@@ -16,7 +19,12 @@ export default class App extends React.Component {
                 component: Link
             }
         ])
-        this.state = { editorState:  EditorState.createEmpty(decorator)};
+        const contentBlocks = flashToDraft(html);
+        const contentState = ContentState.createFromBlockArray(contentBlocks);
+        //draftToFlash(contentState);
+        window.draftToFlash = draftToFlash;
+        this.state = { editorState: EditorState.createWithContent(contentState, decorator) };
+        // this.state = { editorState:  EditorState.createEmpty(decorator) };
     }
 
     findLinkEntities = (contentBlock, callback, contentState) => {

@@ -1,8 +1,6 @@
 import { CharacterMetadata, genKey, ContentBlock } from 'draft-js';
 import { OrderedSet, List } from 'immutable';
 
-const EMPTY_SET = OrderedSet();
-
 const SOFT_BREAK_PLACEHOLDER = '\r';
 const ZERO_WIDTH_SPACE = '\u200B'
 const LINE_BREAKS = /(\r\n|\r|\n)/g;
@@ -12,7 +10,7 @@ export default function flashToDraft(xml) {
     const doc = parser.parseFromString(wrapTagAround(xml, "root"), "text/xml");
     const children = Array.prototype.slice.call(doc.documentElement.children);
     const blockList = children.map(childNode => parseNode(childNode));
-    console.log(blockList);
+    return blockList;
 }
 
 //TODO collapse whitespace
@@ -31,7 +29,7 @@ class TextFragment {
     }
 
     static create(text) {
-        return new TextFragment(text, new Array(text.length).fill(CharacterMetadata.create()));
+        return new TextFragment(text, List.of(...(new Array(text.length).fill(CharacterMetadata.create()))));
     }
 
     static merge(fragment1, fragment2) {
@@ -42,11 +40,11 @@ class TextFragment {
     }
 
     applyStyles(styles) {
-        this.characterMetaList = this.characterMetaList.map(characterMeta => {
+        this.characterMetaList = List.of(...(this.characterMetaList.toArray().map(characterMeta => {
             return styles.reduce((acc, style) => {
                 return CharacterMetadata.applyStyle(acc, style);
             }, characterMeta);
-        });
+        })));
         return this;
     }
 }
@@ -90,10 +88,10 @@ function parseNode(domNode, inlineStyles) {
 //Assumes no nested block node (only inline nodes or text nodes under this block node)
 function parseBlockNode(domElement, inlineStyles) {
     let children = Array.prototype.slice.call(domElement.childNodes);
-    children = removeLeadingWhitespace
+    //children = removeLeadingWhitespace
     
     const textFragment = children.reduce((acc, childNode) => {
-        const nextTextFragment = parseNode(childNode);
+        const nextTextFragment = parseNode(childNode, inlineStyles);
         return TextFragment.merge(acc, nextTextFragment);
     }, TextFragment.createEmpty());
     return new ContentBlock({
@@ -120,29 +118,29 @@ function parseInlineNode(domElement, inlineStyles) {
     latestInlineStyles = Object.assign(latestInlineStyles, INLINE_STYLE_MAP[tagName]);
     const children = Array.prototype.slice.call(domElement.childNodes);
     return children.reduce((acc, childNode) => {
-        const nextTextFragment = parseNode(childNode);
+        const nextTextFragment = parseNode(childNode, latestInlineStyles);
         return TextFragment.merge(acc, nextTextFragment);
     }, TextFragment.createEmpty());
 }
 
 function getStyleSetFromInlineStyles(inlineStyles) {
-    let styleSet = EMPTY_SET;
+    let stylesArr = [];
     if (inlineStyles.hasOwnProperty("color")) {
-        styleSet.add(`CUSTOM_COLOR_${inlineStyles.color}`);
+        stylesArr.push(`CUSTOM_COLOR_${inlineStyles.color}`);
     }
     if (inlineStyles.hasOwnProperty("size")) {
-        styleSet.add(`CUSTOM_FONT_SIZE_${inlineStyles.size}`);
+        stylesArr.push(`CUSTOM_FONT_SIZE_${inlineStyles.size}px`);
     }
     if(inlineStyles.hasOwnProperty("font-weight")) {
-        styleSet.add("BOLD");
+        stylesArr.push("BOLD");
     }
     if (inlineStyles.hasOwnProperty("font-style")) {
-        styleSet.add("ITALIC");
+        stylesArr.push("ITALIC");
     }
     if (inlineStyles.hasOwnProperty("text-decoration")) {
-        styleSet.add("UNDERLINE");
+        stylesArr.push("UNDERLINE");
     }
-    return styleSet;
+    return OrderedSet.of(...stylesArr);
 }
 
 function wrapTagAround(xml, tag) {
