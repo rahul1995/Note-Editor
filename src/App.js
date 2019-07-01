@@ -21,7 +21,7 @@ export default class App extends React.Component {
         ])
         const contentBlocks = flashToDraft(html);
         const contentState = ContentState.createFromBlockArray(contentBlocks);
-        //draftToFlash(contentState);
+        console.log(draftToFlash(contentState));
         window.draftToFlash = draftToFlash;
         this.state = { editorState: EditorState.createWithContent(contentState, decorator) };
         // this.state = { editorState:  EditorState.createEmpty(decorator) };
