@@ -9,6 +9,7 @@ Uncategorized:
     ☐ Apply current inline style while inserting hyperlinks
     ☐ Ignore right clicks on mousedown
     ☐ Select text then hyperlink should autofill URL too
+    ☐ Create EntityType class instead of hard-coded "LINK" everywhere
 
 DEMO:
     ☐ 2-way sync
