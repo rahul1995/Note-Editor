@@ -1,10 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
+import RichTextEditor from './RichTextEditor';
 import Provider from '@react/react-spectrum/Provider';
 
 ReactDOM.render(
     <Provider theme="light">
-        <App />
+        <RichTextEditor />
     </Provider>, document.getElementById("root")
 );

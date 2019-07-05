@@ -4,8 +4,10 @@ import Button from "@react/react-spectrum/Button";
 export default class ToolbarButton extends React.Component {
 
     handleMouseDown = (e) => {
-        e.preventDefault();
-        this.props.onClick(this.props.style);
+        if(e.button === 0) {
+            e.preventDefault();
+            this.props.onClick(this.props.style);
+        }
     }
 
     render() {

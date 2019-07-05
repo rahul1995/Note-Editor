@@ -1,5 +1,6 @@
 import React from 'react';
 import ToolbarButton from './ToolbarButton';
+import Button from '@react/react-spectrum/Button';
 import Link from '@react/react-spectrum/Icon/Link';
 import ModalTrigger from '@react/react-spectrum/ModalTrigger';
 import Dialog from '@react/react-spectrum/Dialog';
@@ -47,7 +48,7 @@ export default class Hyperlink extends React.Component {
     render() {
         return (
             <ModalTrigger ref = {(el) => {this.modalTrigger = el}}>
-                <ToolbarButton icon={<Link />} />
+                <Button variant="action" icon={<Link />} />
                 <MyDialog editorState={this.props.editorState} setLink={this.setLink} closeDialog={this.closeDialog}
                     key={this.initialText}
                 />

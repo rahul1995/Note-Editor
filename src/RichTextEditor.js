@@ -4,38 +4,17 @@ import createStyles from 'draft-js-custom-styles';
 import "./custom.css";
 import React from 'react';
 import ToolBar from './ToolBar';
-import Link from './Link';
-import flashToDraft from './flashToDraft';
-import html from './html';
-import draftToFlash from './draftToFlash';
+import DecoratorFactory from './DecoratorFactory';
+import LinkUtils from './utils/LinkUtils';
 
-export default class App extends React.Component {
+export default class RichTextEditor extends React.Component {
     constructor(props) {
         super(props);
         this.customStylesOb = createStyles(['font-size', 'color'], 'CUSTOM_');
-        const decorator = new CompositeDecorator([
-            {
-                strategy: this.findLinkEntities,
-                component: Link
-            }
-        ])
-        const contentBlocks = flashToDraft(html);
-        const contentState = ContentState.createFromBlockArray(contentBlocks);
-        console.log(draftToFlash(contentState));
-        window.draftToFlash = draftToFlash;
-        this.state = { editorState: EditorState.createWithContent(contentState, decorator) };
-        // this.state = { editorState:  EditorState.createEmpty(decorator) };
+        const decorator = new CompositeDecorator([DecoratorFactory.getDecorator('LINK')]);
+        this.state = { editorState:  EditorState.createEmpty(decorator) };
+        this.editorRef = null;
     }
-
-    findLinkEntities = (contentBlock, callback, contentState) => {
-        contentBlock.findEntityRanges(character => {
-          const entityKey = character.getEntity();
-          return (
-            entityKey !== null &&
-            contentState.getEntity(entityKey).getType() === "LINK"
-          );
-        }, callback);
-      }
 
     onChange = (editorState) => {
         this.setState({ editorState });
@@ -58,21 +37,12 @@ export default class App extends React.Component {
 
     onEditorClick = (e) => {
         if(e.ctrlKey) {
-            this.openLink();
+            const link = LinkUtils.getLinkFromState(this.state.editorState);
+            if(link) { window.open(link); }
         }
         if(this.editorRef) {
             this.editorRef.focus();
         }
-    }
-
-    openLink() {
-        const editorState = this.state.editorState;
-        const selection = editorState.getSelection();
-        const contentState = editorState.getCurrentContent();
-        const block = contentState.getBlockForKey(selection.getFocusKey());
-        const offset = selection.getFocusOffset();
-        const entityKey = block.getEntityAt(offset);
-        window.open(contentState.getEntity(entityKey).getData().url);
     }
 
     render() {
