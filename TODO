@@ -1,8 +1,27 @@
-☐ Collapsing whitespace in flashToDraft
-☐ Color palette
-☐ Entity support
-☐ Copy text as well as URL when selecting text before hitting "Add URL"
-☐ draftToFlash
-☐ Create Hyperlink Done button using Enter key not working
-☐ LI bullet color
-☐ Apply current inline style while inserting hyperlinks
+Uncategorized:
+    ☐ Collapsing whitespace in flashToDraft
+    ☐ Color palette
+    ☐ Entity support
+    ☐ Copy text as well as URL when selecting text before hitting "Add URL"
+    ☐ draftToFlash
+    ☐ Create Hyperlink Done button using Enter key not working
+    ☐ LI bullet color
+    ☐ Apply current inline style while inserting hyperlinks
+    ☐ Ignore right clicks on mousedown
+    ☐ Select text then hyperlink should autofill URL too
+
+DEMO:
+    ☐ 2-way sync
+    ✔ Mousedown bug @done(19-07-05 12:30)
+    ☐ Undo/Redo buttons
+    ☐ Font-size selector
+    ☐ Color picker
+    ☐ CSS
+    ☐ Sync view
+    ☐ Export notes
+    ☐ Character limit
+    ☐ Responsive toolbar
+    ☐ Localization
+    ☐ Insert Hyperlink
+        ☐ Enter trigger
+        ☐ Apply current inline styles

@@ -4,8 +4,15 @@ import FontSizeSelect from './toolbar-ui/FontSizeSelect';
 import ToggleList from './toolbar-ui/ToggleList';
 import Hyperlink from './toolbar-ui/Hyperlink';
 import ColorSelect from './toolbar-ui/ColorSelect';
+import ob from './ob';
 
 export default class ToolBar extends React.Component {
+
+    constructor(props) {
+        super(props);
+        window.toolFn = () => {return ob}
+        window.modTool = (k, v) => {ob[k] = v}
+    }
 
     render() {
         return (

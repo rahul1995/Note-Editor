@@ -9,7 +9,9 @@ export default class FontSizeSelect extends React.Component {
     }
 
     setFontSize = fontSize => {
-      this.props.focusEditor(this.props.styles.add(this.props.editorState, fontSize));
+        let newEditorState = this.props.styles.add(this.props.editorState, fontSize);
+        let newStyles = newEditorState.getCurrentInlineStyle();
+        this.props.focusEditor(this.props.styles.add(this.props.editorState, fontSize), newStyles);
     }
 
     render() {
