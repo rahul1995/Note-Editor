@@ -107,7 +107,7 @@ function parseInlineNode(domElement, inlineStyles) {
     let latestInlineStyles = {...inlineStyles};
     const tagName = domElement.tagName.toUpperCase();
     if(tagName === 'FONT') {
-        const styleNames = ["size", "color"];
+        const styleNames = ["SIZE", "COLOR"];
         styleNames.forEach(styleName => {
             const styleVal = domElement.getAttribute(styleName);
             if (styleVal) {
@@ -125,11 +125,11 @@ function parseInlineNode(domElement, inlineStyles) {
 
 function getStyleSetFromInlineStyles(inlineStyles) {
     let stylesArr = [];
-    if (inlineStyles.hasOwnProperty("color")) {
-        stylesArr.push(`CUSTOM_COLOR_${inlineStyles.color}`);
+    if (inlineStyles.hasOwnProperty("COLOR")) {
+        stylesArr.push(`CUSTOM_COLOR_${inlineStyles.COLOR}`);
     }
-    if (inlineStyles.hasOwnProperty("size")) {
-        stylesArr.push(`CUSTOM_FONT_SIZE_${inlineStyles.size}px`);
+    if (inlineStyles.hasOwnProperty("SIZE")) {
+        stylesArr.push(`CUSTOM_FONT_SIZE_${inlineStyles.SIZE}px`);
     }
     if(inlineStyles.hasOwnProperty("font-weight")) {
         stylesArr.push("BOLD");

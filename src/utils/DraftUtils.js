@@ -1,3 +1,6 @@
+import draftToFlash from './draftToFlash';
+import flashToDraft from './flashToDraft';
+
 export default class DraftUtils {
     static getLinkFromState(editorState) {
         const selection = editorState.getSelection();
@@ -45,5 +48,13 @@ export default class DraftUtils {
                 return text;
             })
             .join(blockDelimiter);
+    }
+
+    static flashToDraft(html) {
+        return flashToDraft(html);
+    }
+
+    static draftToFlash(contentState) {
+        return draftToFlash(contentState);
     }
 }

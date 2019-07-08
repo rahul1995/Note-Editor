@@ -75,11 +75,8 @@ class DraftToFlashGenerator {
             const [text, styleSet] = fragment;
             const fontStyles = this.getFontStyles(styleSet);
             const fontStylesDiff = objectDiff(fontStyles, latestFontStyles) //fontStylesDiff = fontStyles - latestFontStyles
-            const defaultStylesToAdd = objectDiff(this.defaultFontStyles, latestFontStyles);
-            const exclusiveFontStyles = {...defaultStylesToAdd, ...fontStylesDiff};
-            latestFontStyles = {...this.defaultFontStyles, ...latestFontStyles, ...fontStyles};
-            if(Object.keys(exclusiveFontStyles).length > 0) {
-                let newFontEl = new CustomElement("FONT", [], exclusiveFontStyles);
+            if(Object.keys(fontStylesDiff).length > 0) {
+                let newFontEl = new CustomElement("FONT", [], fontStylesDiff);
                 if(rootFontEl === null) {
                     rootFontEl = latestFontEl = newFontEl;
                 } else {
@@ -87,7 +84,8 @@ class DraftToFlashGenerator {
                     latestFontEl = newFontEl;
                 }
             }
-            latestFontEl.children.push(this.processTextFragment(text, styleSet))
+            latestFontEl.children.push(this.processTextFragment(text, styleSet));
+            latestFontStyles = fontStyles;
         });
         return rootFontEl;
     }
@@ -95,7 +93,7 @@ class DraftToFlashGenerator {
     processEntity(entityKey, childElement) {
         if(entityKey !== null) {
             const entity = this.contentState.getEntity(entityKey); // TODO catch exception which is thrown in case no entity exists
-            if(entity && entity.getType().toUpperCase === "LINK") {
+            if(entity && entity.getType() === "LINK") {
                 const link = entity.getData() || "";
                 return new CustomElement("A", [childElement], {"HREF": link})
             }
@@ -111,7 +109,7 @@ class DraftToFlashGenerator {
                 acc.SIZE = style.substring("CUSTOM_FONT_SIZE_".length).slice(0, -2);
             }
             return acc;
-        }, {});
+        }, {...this.defaultFontStyles});
     }
 
     processTextFragment(text, styleSet) {
@@ -143,6 +141,4 @@ class DraftToFlashGenerator {
 
 export default function draftToFlash(contentState) {
     return new DraftToFlashGenerator(contentState).generate();
-    const blocks = contentState.getBlockMap();
-    return blocks.map(block => processBlock(block)).join('');
 }

@@ -6,6 +6,7 @@ import React from 'react';
 import ToolBar from './ToolBar';
 import DecoratorFactory from './DecoratorFactory';
 import DraftUtils from './utils/DraftUtils';
+import htmlExample from './html2';
 
 export default class RichTextEditor extends React.Component {
     constructor(props) {
@@ -14,6 +15,21 @@ export default class RichTextEditor extends React.Component {
         const decorator = new CompositeDecorator([DecoratorFactory.getDecorator('LINK')]);
         this.state = { editorState: EditorState.createEmpty(decorator) };
         this.editorRef = null;
+        window.draftToFlash = () => DraftUtils.draftToFlash(this.state.editorState.getCurrentContent());
+        window.flashToDraft = (html) => {
+            const contentBlocks = DraftUtils.flashToDraft(html);
+            const contentState = ContentState.createFromBlockArray(contentBlocks);
+            this.onChange(EditorState.createWithContent(contentState, decorator));
+        }
+
+        const html = props.htmlNotes || htmlExample;
+        if (html && html.length > 0) {
+            const contentBlocks = DraftUtils.flashToDraft(html);
+            const contentState = ContentState.createFromBlockArray(contentBlocks);
+            this.state = { editorState: EditorState.createWithContent(contentState, decorator) };
+        } else {
+            this.state = { editorState: EditorState.createEmpty(decorator) };
+        }
     }
 
     onChange = (editorState) => {
