@@ -5,14 +5,14 @@ import "./custom.css";
 import React from 'react';
 import ToolBar from './ToolBar';
 import DecoratorFactory from './DecoratorFactory';
-import LinkUtils from './utils/LinkUtils';
+import DraftUtils from './utils/DraftUtils';
 
 export default class RichTextEditor extends React.Component {
     constructor(props) {
         super(props);
         this.customStylesOb = createStyles(['font-size', 'color'], 'CUSTOM_');
         const decorator = new CompositeDecorator([DecoratorFactory.getDecorator('LINK')]);
-        this.state = { editorState:  EditorState.createEmpty(decorator) };
+        this.state = { editorState: EditorState.createEmpty(decorator) };
         this.editorRef = null;
     }
 
@@ -37,7 +37,7 @@ export default class RichTextEditor extends React.Component {
 
     onEditorClick = (e) => {
         if(e.ctrlKey) {
-            const link = LinkUtils.getLinkFromState(this.state.editorState);
+            const link = DraftUtils.getLinkFromState(this.state.editorState);
             if(link) { window.open(link); }
         }
         if(this.editorRef) {

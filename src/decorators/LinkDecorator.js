@@ -1,3 +1,5 @@
+import React from 'react';
+
 function Link(props) {
     const { url } = props.contentState.getEntity(props.entityKey).getData();
     return (

@@ -1,30 +1,22 @@
 import React from 'react';
-import InlineStyleComponent from './toolbar-ui/InlineStyleComponent';
 import FontSizeSelect from './toolbar-ui/FontSizeSelect';
+import ColorPickerButton from './toolbar-ui/color-picker/ColorPickerButton';
+import ToggleableInlineStyle from './toolbar-ui/ToggleableInlineStyles';
 import ToggleList from './toolbar-ui/ToggleList';
 import Hyperlink from './toolbar-ui/Hyperlink';
-import ColorSelect from './toolbar-ui/ColorSelect';
-import ob from './ob';
+import HistoryButtons from './toolbar-ui/HistoryButtons';
 
-export default class ToolBar extends React.Component {
-
-    constructor(props) {
-        super(props);
-        window.toolFn = () => {return ob}
-        window.modTool = (k, v) => {ob[k] = v}
-    }
-
-    render() {
-        return (
-            <div className="texteditor-toolbar-container">
-                <FontSizeSelect editorState={this.props.editorState} onChange={this.props.onChange} focusEditor={this.props.focusEditor}
-                    styles={this.props.styles.fontSize} />
-                <ColorSelect editorState={this.props.editorState} onChange={this.props.onChange} focusEditor={this.props.focusEditor}
-                    styles={this.props.styles.color} />
-                <InlineStyleComponent editorState={this.props.editorState} onChange={this.props.onChange} />
-                <ToggleList editorState={this.props.editorState} onChange={this.props.onChange} />
-                <Hyperlink editorState={this.props.editorState} onChange={this.props.onChange} focusEditor={this.props.focusEditor} />
-            </div>
-        );
-    }
+export default function ToolBar(props) {
+    return (
+        <div className="texteditor-toolbar-container">
+            <FontSizeSelect editorState={props.editorState} onChange={props.onChange} focusEditor={props.focusEditor}
+                styles={props.styles.fontSize} />
+            <ColorPickerButton editorState={props.editorState} onChange={props.onChange} focusEditor={props.focusEditor}
+                styles={props.styles.color} />
+            <ToggleableInlineStyle editorState={props.editorState} onChange={props.onChange} />
+            <ToggleList editorState={props.editorState} onChange={props.onChange} />
+            <Hyperlink editorState={props.editorState} onChange={props.onChange} focusEditor={props.focusEditor} />
+            <HistoryButtons editorState={props.editorState} onChange={props.onChange} />
+        </div>
+    );
 }

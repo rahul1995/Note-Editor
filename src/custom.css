@@ -27,3 +27,25 @@
 .texteditor-hidePlaceholder .public-DraftEditorPlaceholder-root {
     display: none;
 }
+
+.color-picker-component-wrapper {
+    position: relative;
+}
+
+.color-picker-component {
+    width: 300px;
+    height: 300px;
+    display: flex;
+    flex-direction: row;
+}
+
+.color-picker-saturation {
+    width: 192px;
+    height: 192px;
+}
+
+.color-picker-hue {
+    margin-left: 16px;
+    width: 24px;
+    height: 192px;
+}

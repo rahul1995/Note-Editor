@@ -1,21 +1,20 @@
 import React from 'react';
-import ToolbarButton from './ToolbarButton';
+import StyleButton from './StyleButton';
 import { RichUtils } from 'draft-js';
 import TextBulleted from "@react/react-spectrum/Icon/TextBulleted";
 
 export default class ToggleList extends React.Component {
+
+    static STYLE = {
+        icon: <TextBulleted />,
+        style: 'unordered-list-item'
+    }
 
     toggleBlockType = (blockType) => {
         this.props.onChange(RichUtils.toggleBlockType(this.props.editorState, blockType));
     }
 
     render() {
-
-        const STYLE = {
-            icon: <TextBulleted />,
-            style: 'unordered-list-item'
-        }
-
         const editorState = this.props.editorState;
         const selection = editorState.getSelection();
         const blockType = editorState
@@ -24,7 +23,8 @@ export default class ToggleList extends React.Component {
             .getType();
         
         return (
-            <ToolbarButton {...STYLE} active={blockType === STYLE.style} onClick={this.toggleBlockType} />
+            <StyleButton icon={ToggleList.STYLE.icon} style={ToggleList.STYLE.style}
+                active={blockType === ToggleList.STYLE.style} onToggle={this.toggleBlockType} />
         );
     }
 }
