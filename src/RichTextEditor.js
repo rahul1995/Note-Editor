@@ -17,15 +17,13 @@ export default class RichTextEditor extends React.Component {
         this.editorRef = null;
         window.draftToFlash = () => DraftUtils.draftToFlash(this.state.editorState.getCurrentContent());
         window.flashToDraft = (html) => {
-            const contentBlocks = DraftUtils.flashToDraft(html);
-            const contentState = ContentState.createFromBlockArray(contentBlocks);
+            const contentState = DraftUtils.flashToDraft(html);
             this.onChange(EditorState.createWithContent(contentState, decorator));
         }
 
         const html = props.htmlNotes || htmlExample;
         if (html && html.length > 0) {
-            const contentBlocks = DraftUtils.flashToDraft(html);
-            const contentState = ContentState.createFromBlockArray(contentBlocks);
+            const contentState = DraftUtils.flashToDraft(html);
             this.state = { editorState: EditorState.createWithContent(contentState, decorator) };
         } else {
             this.state = { editorState: EditorState.createEmpty(decorator) };

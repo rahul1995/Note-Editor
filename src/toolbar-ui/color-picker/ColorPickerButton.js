@@ -2,6 +2,7 @@ import React from 'react';
 import OverlayTrigger from '@react/react-spectrum/OverlayTrigger';
 import TextField from '@react/react-spectrum/TextField';
 import Button from '@react/react-spectrum/Button';
+import FieldLabel from '@react/react-spectrum/FieldLabel';
 import Popover from '@react/react-spectrum/Popover';
 import ColorPicker from "./ColorPicker";
 import ColorUtils from '../../utils/ColorUtils';
@@ -61,8 +62,10 @@ class ColorPickerComponent extends React.Component {
         return (
             <div>
                 <ColorPicker color={this.state.color} onChangeComplete={this.onColorChange} />
-                <TextField quiet value={this.state.textVal} onKeyDown={this.handleKeyDown}
-                    onChange={this.handleChange} />
+                <FieldLabel label="Hex" position="left">
+                    <TextField className="colorpicker-textfield" quiet value={this.state.textVal} onKeyDown={this.handleKeyDown}
+                        onChange={this.handleChange} />
+                </FieldLabel>
             </div>
         )
     }

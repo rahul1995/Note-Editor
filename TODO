@@ -1,6 +1,5 @@
 Uncategorized:
     ☐ Collapsing whitespace in flashToDraft
-    ☐ Color palette
     ☐ Entity support
     ☐ Copy text as well as URL when selecting text before hitting "Add URL"
     ☐ draftToFlash
@@ -12,22 +11,26 @@ Uncategorized:
     ☐ Create EntityType class instead of hard-coded "LINK" everywhere
 
 DEMO:
-    Critical:
-        ✔ Color picker @critical @5h @done(19-07-08 01:30)
     High:
         ☐ Automata @7h @high @today 
+        ☐ draftToFlash - processEntity() function @high @today @2m
+        ☐ Link color @high @today @10m
+        ☐ Apply entity in draftToFlash parser and clean code @2h @high @today 
+        ☐ CSS @3h @high @today 
         ☐ Sync view @high @3h
-        ✔ Undo/Redo @high  @2h @done(19-07-06 21:20)
         ☐ Font Selector @4h @high 
     Low:
-        ☐ Parser's better code @low @2h
+        ☐ Localization @1h
+        ☐ List-items CSS @low 
         ☐ Character limit @low @3h
-        ✔ Mousedown bug @low @30m @done(19-07-05 12:30)
         ☐ Export notes @2h @low 
         ☐ Select Note @1h30m @low
-        ☐ CSS @3h @low 
         ☐ Responsive toolbar @2h @low 
-        ☐ Localization @1h
-        ☐ Insert Hyperlink
-            ☐ Enter trigger
-            ✔ Apply current inline styles @done(19-07-08 18:22)
+        ☐ Insert Hyperlink Enter trigger @low
+
+Archive:
+  ✔ Color palette @done(19-07-09 01:34) @project(Uncategorized)
+  ✔ Color picker @critical @5h @done(19-07-08 01:30) @project(DEMO.Critical)
+  ✔ Undo/Redo @high  @2h @done(19-07-06 21:20) @project(DEMO.High)
+  ✔ Mousedown bug @low @30m @done(19-07-05 12:30) @project(DEMO.Low)
+  ✔ Apply current inline styles in hyperlink @done(19-07-08 18:22) @project(DEMO.Low)

@@ -2,14 +2,23 @@ import { getEntityRanges } from 'draft-js-utils';
 
 class CustomElement {
 
-    constructor(tag, children=[], attrs={}) {
+    static TYPE = {
+        ELEMENT: "element",
+        TEXT: "text"
+    }
+
+    // For text node, tag and children are not applicable, text data should be provided as attrs
+    constructor({tag, type=CustomElement.TYPE.ELEMENT, children=[], attrs={}}) {
         this.tag = tag;
+        this.type = type;
         this.children = children;
         this.attrs = attrs;
     }
 
     toXML() {
-        if(this.tag && this.tag.toUpperCase() === "TEXT") return typeof this.attrs !== "string" ? "" : this.attrs; // Text node special format
+        if(this.type === CustomElement.TYPE.TEXT) {
+            return typeof this.attrs !== "string" ? "" : this.attrs;
+        }
         const childrenXML = this.children.map(el => el.toXML()).join('');
         const attrsStr = this.attrs && Object.keys(this.attrs).map(key => `${key}="${this.attrs[key]}"`).join(" ");
         return `<${this.tag}${(attrsStr && attrsStr.length) > 0 ? ' ' + attrsStr : ''}>${childrenXML}</${this.tag}>`;
@@ -50,7 +59,11 @@ class DraftToFlashGenerator {
         const entityRanges = getEntityRanges(text, charList);
         let inlineElements = this.processInline(entityRanges);
         let blockElement = this.getBlockElement(block.getType(), inlineElements);
-        blockElement = new CustomElement("TEXTFORMAT", [blockElement], {"LEADING": "2"});
+        blockElement = new CustomElement({
+            tag: "TEXTFORMAT",
+            children: [blockElement],
+            attrs: {"LEADING": "2"}
+        });
         return blockElement.toXML();
     }
 
@@ -64,9 +77,16 @@ class DraftToFlashGenerator {
     
     getBlockElement(blockType, inlineChildren) {
         if(blockType === 'unordered-list-item') {
-            return new CustomElement("LI", inlineChildren);
+            return new CustomElement({
+                tag: "LI",
+                children: inlineChildren
+            });
         }
-        return new CustomElement("P", inlineChildren, {"ALIGN": "LEFT"});
+        return new CustomElement({
+            tag: "P",
+            children: inlineChildren,
+            attrs: {"ALIGN": "LEFT"}
+        });
     }
 
     processTextFragments(fragments) {
@@ -76,7 +96,11 @@ class DraftToFlashGenerator {
             const fontStyles = this.getFontStyles(styleSet);
             const fontStylesDiff = objectDiff(fontStyles, latestFontStyles) //fontStylesDiff = fontStyles - latestFontStyles
             if(Object.keys(fontStylesDiff).length > 0) {
-                let newFontEl = new CustomElement("FONT", [], fontStylesDiff);
+                let newFontEl = new CustomElement({
+                    tag: "FONT",
+                    children: [],
+                    attrs: fontStylesDiff
+                });
                 if(rootFontEl === null) {
                     rootFontEl = latestFontEl = newFontEl;
                 } else {
@@ -94,8 +118,12 @@ class DraftToFlashGenerator {
         if(entityKey !== null) {
             const entity = this.contentState.getEntity(entityKey); // TODO catch exception which is thrown in case no entity exists
             if(entity && entity.getType() === "LINK") {
-                const link = entity.getData() || "";
-                return new CustomElement("A", [childElement], {"HREF": link})
+                const link = entity.getData().url || "";
+                return new CustomElement({
+                    tag: "A",
+                    children: [childElement],
+                    attrs: {"HREF": link}
+                });
             }
         }
         return childElement;
@@ -116,7 +144,7 @@ class DraftToFlashGenerator {
         let rootTag = null, parent = null;
         this.stylesOrder.forEach(style => {
             if(styleSet.includes(style)) {
-                let tag = new CustomElement(this.stylesElementMap[style]);
+                let tag = new CustomElement({ tag: this.stylesElementMap[style] });
                 if(rootTag == null) {
                     rootTag = tag;
                 } else {
@@ -125,7 +153,10 @@ class DraftToFlashGenerator {
                 parent = tag;
             }
         });
-        let textTag = new CustomElement("TEXT", undefined, text);
+        let textTag = new CustomElement({
+            type: CustomElement.TYPE.TEXT,
+            attrs: text
+        });
         if(parent != null) {
             parent.children = [textTag];
         } else {
